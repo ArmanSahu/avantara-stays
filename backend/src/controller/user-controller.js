@@ -1,5 +1,5 @@
 const userModel = require("../models/user-model");
-const {generateUserToken} = require("../utils/tokens/token");
+const {generateToken} = require("../utils/tokens/token");
 
 const signUp = async(req,res) => {
     const {email,username,password} = req.body;
@@ -40,7 +40,7 @@ const signIn = async(req,res) => {
         if(!isValid){
             return res.status(401).json({message: "Invalid credentials"});
         }
-        const token = generateUserToken(user);
+        const token = generateToken(user);
         res.cookie("token",token,{
             maxAge: 3*24*60*60*1000,
             httpOnly: true,
