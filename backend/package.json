@@ -5,15 +5,19 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev" : "npx nodemon server.js",
-    "start": "node server.js"
+    "dev": "npx nodemon server.js",
+    "start": "node server.js",
+    "create-admin": "node ./src/script/admin.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "mongoose": "^9.3.1",
     "nodemon": "^3.1.14"
   }
 }
