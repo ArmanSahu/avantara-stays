@@ -14,7 +14,8 @@ function verifyUserToken(token){
 
 function generateAdminToken(admin){
     return jwt.sign({
-        adminId: admin._id
+        adminId: admin._id,
+        role: admin.role
     },process.env.ADMIN_JWT_SECRET),{
         expiresIn:"7d"
     }
