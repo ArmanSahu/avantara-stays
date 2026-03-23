@@ -4,7 +4,7 @@ const connectDatabase = require("./src/database/database-connect");
 const PORT = process.env.PORT || 8000;
 
 connectDatabase().then(()=>{
-    app.listen("port",()=>{
+    app.listen(PORT,()=>{
         console.log(`server started on port ${PORT}`);
     })
 })
