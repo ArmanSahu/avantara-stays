@@ -2,7 +2,7 @@ const { verifyToken } = require("../utils/tokens/token");
 
 
 const authMiddleware = async(req,res,next) => {
-    const token = res.cookies?.token;
+    const token = req.cookies?.token;
     if(!token){
         return res.status(401).json({message:"Unauthorized access"});
     }
@@ -11,7 +11,7 @@ const authMiddleware = async(req,res,next) => {
         req.user  = decoded;
         next();
     }catch(err){
-        return res.status(401).json({ message: "Invalid token" });
+        return res.status(401).json({ message: "Invalid token" ,error:err.message});
     }
 } 
 module.exports = authMiddleware;
