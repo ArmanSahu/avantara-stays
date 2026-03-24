@@ -10,7 +10,7 @@ const signIn = async(req,res) => {
     try{
         const admin = await userModel.findOne({email}).select("+password");
         if(!admin || admin.role !== "admin"){
-            return res.status(401).json({message: "admin with this email not found"});
+            return res.status(401).json({message: "Invalid email"});
         }
         const isValid = await admin.comparePassword(password);
         if(!isValid){
@@ -23,7 +23,7 @@ const signIn = async(req,res) => {
             sameSite: "strict",
             secure: false
         });
-        res.status(200).json({message: "Admin signed in successfully"});
+        res.status(200).json({message: "Admin sign in successfull"});
     }catch(err){    
         return res.status(500).json({message:"Internal server error",error:err.message});
     }
@@ -33,6 +33,6 @@ const signOut = async(req,res) => {
         httpOnly: true,
         secure: false
     });
-    return res.status(200).json({message:"Signedout successfully"});
+    return res.status(200).json({message:" Admin Signout successfull"});
 }
 module.exports = {signIn,signOut};

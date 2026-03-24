@@ -17,7 +17,7 @@ const signUp = async(req,res) => {
             username,
             password
         });
-        res.status(200).json("User signup successfully");
+        res.status(200).json("User signup successfull");
     }catch(err){
         return res.status(500).json({message:"Internal server error",error:err.message});
     }
@@ -47,7 +47,7 @@ const signIn = async(req,res) => {
             sameSite: "strict",
             secure: false
         });
-        res.status(200).json({message:"User signed successfully"});
+        res.status(200).json({message:"User signin successfully"});
     }catch(err){
         return res.status(500).json({message: "Internal server error",error:err.message});
     }
@@ -58,7 +58,7 @@ const signOut = async(req,res) => {
         httpOnly: true,
         sameSite: "strict"
     });
-    return res.status(200).json({message:"Signedout successfully"});
+    return res.status(200).json({message:"Signout successfully"});
 }
 
 

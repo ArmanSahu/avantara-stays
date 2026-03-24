@@ -70,8 +70,6 @@ const deleteProperty = async(req,res) => {
 }
 
 
-
-
 module.exports = {
     addProperty,
     updateProperty,

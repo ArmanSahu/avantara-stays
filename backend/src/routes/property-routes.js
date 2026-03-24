@@ -6,11 +6,13 @@ const validateProperty = require("../middlewares/property-validation-middelware"
 
 const router = express.Router();
 
-router.use(authMiddleware);
 
-router.post("/add",isAdmin,validateProperty,addProperty);
-router.put("/update/:propertyId",isAdmin,updateProperty);
-router.delete("/:propertyId",isAdmin,deleteProperty);
+
+
+//Admin Routes
+router.post("/", authMiddleware, isAdmin, validateProperty, addProperty);
+router.put("/:propertyId", authMiddleware, isAdmin, updateProperty);
+router.delete("/:propertyId", authMiddleware, isAdmin, deleteProperty);
 
 
 
