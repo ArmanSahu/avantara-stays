@@ -1,4 +1,42 @@
 const propertyModel = require("../models/property-model");
+const mongoose = require("mongoose");
+
+const getProperties = async(req,res) => {
+    try{
+        const properties = await propertyModel.find({}).limit(10).sort({createdAt:1});
+        return res.status(200).json({
+            message: "All properties",
+            properties
+        });
+    }catch(err){
+        return res.status(500).json({
+            message: "Internal server Error",
+            error: err.message
+        });
+    }
+}
+
+const getProperty = async(req,res) => {
+    const propertyId = req.params.propertyId; 
+    if(!propertyId || !mongoose.Types.ObjectId.isValid(propertyId)){
+        return res.status(400).json({message:"Invalid property ID"});
+    }
+    try{
+        const property = await propertyModel.findById(propertyId);
+        if(!property){
+            return res.status(404).json({message:"Property not found"});
+        }
+        return res.status(200).json({
+            message: "Property found",
+            property
+        });
+    }catch(err){
+        return res.status(500).json({
+            message: "Internal server Error",
+            error: err.message
+        });
+    }    
+}
 
 const addProperty = async(req,res) => {
    const propertyDetails = req.body;
@@ -22,6 +60,9 @@ const addProperty = async(req,res) => {
 
 const updateProperty = async(req,res) => {
     const propertyId = req.params.propertyId;
+    if(!propertyId || !mongoose.Types.ObjectId.isValid(propertyId)){
+        return res.status(401).json({message: "Invalid request"});
+    }
     const data = req.body;
     if(Object.keys(data).length === 0){
         return res.status(400).json({message:"Invalid data"});
@@ -73,5 +114,7 @@ const deleteProperty = async(req,res) => {
 module.exports = {
     addProperty,
     updateProperty,
-    deleteProperty
+    deleteProperty,
+    getProperties,
+    getProperty
 }

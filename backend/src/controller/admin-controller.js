@@ -4,11 +4,13 @@ const { generateToken } = require("../utils/tokens/token");
 
 const signIn = async(req,res) => {
     const {email,password} = req.body;
+    console.log(email);
     if(!email){
         return res.status(400).json({message:"Enter correct email"});
     }
     try{
         const admin = await userModel.findOne({email}).select("+password");
+        console.log(admin);
         if(!admin || admin.role !== "admin"){
             return res.status(401).json({message: "Invalid email"});
         }
