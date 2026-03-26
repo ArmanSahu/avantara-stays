@@ -20,6 +20,7 @@ const propertySchema = z.object({
 const validateProperty = (req,res,next) => {
    const result = propertySchema.safeParse(req.body);
    if(!result.success){
+        
         return res.status(400).json({
             message: "Invalid details",
             error: result.error

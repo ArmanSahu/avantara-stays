@@ -11,11 +11,11 @@ const bookingSchema = new Schema({
     propertyId: {
         type: ObjectId,
         required: true,
-        ref: "properties"
+        ref: "Property"
     },
     startDate:{
         type: Date,
-        required: true
+        required: true,
     },
     endDate:{
         type: Date,
@@ -30,15 +30,15 @@ const bookingSchema = new Schema({
     timestamps: true
 });
 
-bookingSchema.pre("save",function(next){
+bookingSchema.pre("save",function(){
     if(this.startDate >= this.endDate){
-        return next(new Error("Start date must be before the end date"));
+        throw new Error("Start date must be before the end date");
     }
-    next();
 });
 bookingSchema.index({propertyId:1});
 bookingSchema.index({userId:1});
 bookingSchema.index({propertyId: 1,startDate: 1,endDate:1});
+
 
 const bookingModel = model("Bookings",bookingSchema);
 module.exports = bookingModel;
