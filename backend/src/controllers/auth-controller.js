@@ -2,6 +2,7 @@ const userModel = require("../models/user-model");
 const {generateToken} = require("../utils/tokens/token");
 
 const signUp = async(req,res) => {
+    
     const {email,username,password} = req.body;
     try{
         const user = await userModel.findOne({
@@ -17,7 +18,7 @@ const signUp = async(req,res) => {
             username,
             password
         });
-        res.status(200).json("User signup successfull");
+        res.status(200).json({message: "User signup successfull"});
     }catch(err){
         return res.status(500).json({message:"Internal server error",error:err.message});
     }

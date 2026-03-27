@@ -91,7 +91,7 @@ const updateReview = async(req,res) => {
     const {review,rating } = req.body;
     const userId =req.user.userId;
     const reviewId = req.params.reviewId;
-    if(!reviewId || !mongoose.Types.ObjectId(reviewId)){
+    if(!reviewId || !mongoose.Types.ObjectId.isValid(reviewId)){
         return res.status(400).json({
             message: "Invalid review Id"
         });
