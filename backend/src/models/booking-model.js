@@ -25,6 +25,10 @@ const bookingSchema = new Schema({
         type: String,
         enum: ["booked","cancelled"],
         default: "booked"
+    },
+    totalAmount:{
+        type: Number,
+        required: true
     }
 },{
     timestamps: true

@@ -1,26 +1,35 @@
 const bookingModel = require("../models/booking-model");
 const mongoose = require("mongoose");
+const normalize = require("../utils/normalizeDates");
+const propertyModel = require("../models/property-model");
 
 
 const booking = async(req,res) => {
     const userId = req.user.userId;
     const propertyId = req.propertyId;
-    const startDate = new Date(req.body.startDate);
-    const endDate = new Date(req.body.endDate);
 
-    const normalize = (date) => {
-        const d = new Date(date);
-        d.setHours(0,0,0,0);
-        return d;
+    if (!req.body.startDate || !req.body.endDate) {
+        return res.status(400).json({ message: "Dates are required" });
     }
-    
-    if(isNaN(startDate) || isNaN(endDate)){
-         return res.status(400).json({ message: "Invalid date format" });
+    if (isNaN(new Date(req.body.startDate)) || isNaN(new Date(req.body.endDate))) {
+        return res.status(400).json({ message: "Invalid date format" });
     }
 
-    if(normalize(startDate)<normalize(new Date())){
+    const startDate = normalize(req.body.startDate);
+
+    const endDate = normalize(req.body.endDate);
+
+    const today = normalize(new Date());
+
+    if(startDate < today){
         return res.status(400).json({
             message: "You cannot book past dates"
+        }); 
+    }
+
+    if (startDate >= endDate) {
+        return res.status(400).json({
+            message: "End date must be after start date"
         });
     }
     
@@ -32,21 +41,32 @@ const booking = async(req,res) => {
             endDate: {$gt: startDate}
         });
         if(existingBooking){
-            console.log(existingBooking);
             return res.status(400).json({
                 message: `The property is not available from start: ${existingBooking.startDate.toDateString()} to end: ${existingBooking.endDate.toDateString()}`,
                 existingBooking
             });
         }
+
+        const property = await propertyModel.findById(propertyId);
+        if(!property){
+            return res.status(404).json({
+                message: "Property not found"
+            });
+        }
+        const nightCount = (endDate - startDate) / (1000*60*60*24);
+        const totalAmount = nightCount * property.pricePerNight; 
+
         const newBooking = await bookingModel.create({
             userId,
             propertyId,
             startDate,
-            endDate
+            endDate,
+            totalAmount
         });
-        return res.status(200).json({
+        
+        return res.status(201).json({
             message: "Your property has been booked",
-            newBooking
+            newBooking,
         });
     }catch(err){
         return res.status(500).json({
@@ -63,9 +83,11 @@ const getBookings = async(req,res) => {
             userId,
             status: "booked"
         }).populate("propertyId","title pricePerNight location images");
+        console.log(bookings);
         if(bookings.length === 0 ){
-            return res.status(404).json({
-                message: "No booking Found"
+            return res.status(200).json({
+                message: "No booking Found",
+                bookings: []
             });
         }
         return res.status(200).json({
@@ -110,18 +132,19 @@ const getBooking = async(req,res) => {
     }
 }
 
-const calender = async(req,res) => {
+const calendar = async(req,res) => {
     const propertyId = req.propertyId;
     try{
-        const propertyData = await bookingModel.find({
-            propertyId
+        const bookings = await bookingModel.find({
+            propertyId,
+            status: "booked"
         });
-        if(propertyData.length === 0){
+        if(bookings.length === 0){
             return res.status(200).json({
                 message: "property is not booked for any dates"
             });
         }
-        const reservedDates = propertyData.map(property => (
+        const reservedDates = bookings.map(property => (
             {
                 startDate : property.startDate,
                 endDate : property.endDate
@@ -142,36 +165,36 @@ const calender = async(req,res) => {
 const cancelBooking = async(req,res) => {
     const bookingId = req.params.bookingId;
     const userId = req.user.userId;
+ 
     if(!bookingId || !mongoose.Types.ObjectId.isValid(bookingId)){
         return res.status(400).json({message:"Invalid bookingId"});
     }
     try{
-        const booking = await bookingModel.findById(bookingId);
+        const booking = await bookingModel.findOne({
+            _id: bookingId,
+            userId
+        });
         if(!booking){
             return res.status(404).json({message:"No booking found"});
-        }
-        if(booking.userId.toString() !== userId){
-            return res.status(403).json({
-                message: "Unauthorized access"
-            })
         }
         if(booking.status === "cancelled"){
             return res.status(400).json({
                 message: "Booking is already cancelled"
             })
         }
-        const bookedAt = new Date(booking.createdAt).getTime();
-        const currentTime = new Date().getTime();
+        
+        const bookingStartDate = normalize(booking.startDate);
+        const oneDayBefore = new Date(bookingStartDate);
+        oneDayBefore.setDate(oneDayBefore.getDate()-1);
+        const today = normalize(new Date());
 
-        const differenceInMs = currentTime - bookedAt;
-        const differenceInMinutes = differenceInMs/(1000*60);
 
-        if(differenceInMinutes>30){
+        if(today > oneDayBefore){
             return res.status(400).json({
-                message:"Cancellation window expired"
+                message: "Cancellation allowed only 1 day before check-in"
             });
         }
-        
+
         booking.status = "cancelled";
         await booking.save();
 
@@ -190,11 +213,10 @@ const cancelBooking = async(req,res) => {
 
 
 
-
 module.exports = {
     booking,
     cancelBooking,
     getBookings,
     getBooking,
-    calender
+    calendar
 }
