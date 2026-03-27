@@ -1,8 +1,8 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/auth-middleware");
-const propertyValidation = require("../middlewares/propertyId-validation-middleware");
-const bookingValidation = require("../middlewares/bookingId-validation-middleware");
-const { postReview, getReviews, updateReview, deleteReview } = require("../controller/review-controller");
+const propertyValidation = require("../middlewares/validate-propertyId-middleware");
+const bookingValidation = require("../middlewares/validate-bookingId-middleware");
+const { postReview, getReviews, updateReview, deleteReview } = require("../controllers/review-controller");
 
 
 const router = express.Router();

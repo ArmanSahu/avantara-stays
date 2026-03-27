@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose")
-const reviewModel = require("../models/reviews-model");
+const reviewModel = require("../models/review-model");
 const propertyModel = require("../models/property-model");
 
 

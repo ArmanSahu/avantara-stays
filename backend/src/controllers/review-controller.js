@@ -1,7 +1,7 @@
 const  mongoose  = require("mongoose");
 const bookingModel = require("../models/booking-model");
 const propertyModel = require("../models/property-model");
-const reviewModel = require("../models/reviews-model");
+const reviewModel = require("../models/review-model");
 const aggregateReviews = require("../utils/reviews-group-data");
 
 

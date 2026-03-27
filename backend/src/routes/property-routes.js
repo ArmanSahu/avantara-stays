@@ -1,8 +1,8 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/auth-middleware");
-const isAdmin = require("../middlewares/isAdmin-middleware");
-const { addProperty, updateProperty, deleteProperty, getProperties, getProperty } = require("../controller/property-controller");
-const validateProperty = require("../middlewares/property-validation-middelware");
+const isAdmin = require("../middlewares/auth-admin-middleware");
+const { addProperty, updateProperty, deleteProperty, getProperties, getProperty } = require("../controllers/property-controller");
+const validateProperty = require("../middlewares/validate-property-middelware");
 
 const router = express.Router();
 //rRoutes accessible to everyone 
