@@ -33,6 +33,14 @@ const propertySchema = new Schema({
     },
     bedrooms: Number,
     bathroom: Number,
+    averageRating: {
+        type: Number,
+        default: 0
+    },
+    totalReviews: {
+        type: Number,
+        default: 0
+    },
     createdBy:{
         type: ObjectId,
         ref: "users",

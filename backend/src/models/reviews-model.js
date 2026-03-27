@@ -21,17 +21,19 @@ const reviewSchema = new Schema({
     },
     rating: {
         type: Number,
-        default: 0,
+        required: true,
         min: 0,
         max: 5
     },
     review: {
         type: String
     } 
+},{
+    timestamps: true
 });
 
 reviewSchema.index({propertyId: 1});
-reviewSchema.index({userId:1,propertyId:1,bookingId:1});
+reviewSchema.index({userId:1,propertyId:1});
 
 const reviewModel = model("Reviews",reviewSchema);
 

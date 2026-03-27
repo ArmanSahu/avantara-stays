@@ -5,6 +5,7 @@ const authRoute = require("./routes/auth-routes");
 const adminRouter = require("./routes/admin-routes");
 const propertyRouter = require("./routes/property-routes");
 const bookingRouter = require("./routes/booking-routes");
+const reviewRouter = require("./routes/review-routes");
 
 
 const app = express();
@@ -22,6 +23,8 @@ app.use("/auth",authRoute);
 app.use("/admin",adminRouter);
 app.use("/property",propertyRouter);
 app.use("/booking",bookingRouter);
+app.use("/review",reviewRouter);
+
 
 
 module.exports = app;
