@@ -1,7 +1,7 @@
 import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router-dom"
 import { Navbar } from "./components/Navbar/Navbar";
 import { Layout } from "./components/Layout/Layout";
-import { Home } from "./pages/HeroPage/Home";
+import { Home } from "./pages/Home/Home";
 import { Footer } from "./components/Footer/Footer";
 import { Text } from "./components/Layout/Text";
 import { Button } from "./components/Layout/Button";
